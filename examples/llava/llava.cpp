@@ -257,7 +257,7 @@ static bool encode_image_with_clip(clip_ctx * ctx_clip, int n_threads, const cli
             }
         }
         const int64_t t_img_enc_batch_us = ggml_time_us();
-        printf("%s: %d segments encoded in %8.2f ms\n", __func__, (int)img_res_v.size, (t_img_enc_batch_us - t_img_enc_start_us) / 1000.0);
+        // printf("%s: %d segments encoded in %8.2f ms\n", __func__, (int)img_res_v.size, (t_img_enc_batch_us - t_img_enc_start_us) / 1000.0);
 
         const int32_t * image_grid = clip_image_grid(ctx_clip);
 
@@ -290,12 +290,12 @@ static bool encode_image_with_clip(clip_ctx * ctx_clip, int n_threads, const cli
         // clip_image_save_to_bmp(*tmp, "image_feature.bmp");
     }
 
-    printf("%s: image embedding created: %d tokens\n", __func__, *n_img_pos);
+    // printf("%s: image embedding created: %d tokens\n", __func__, *n_img_pos);
 
     const int64_t t_img_enc_end_us = ggml_time_us();
     float t_img_enc_ms = (t_img_enc_end_us - t_img_enc_start_us) / 1000.0;
 
-    printf("\n%s: image encoded in %8.2f ms by CLIP (%8.2f ms per image patch)\n", __func__, t_img_enc_ms, t_img_enc_ms / *n_img_pos);
+    // printf("\n%s: image encoded in %8.2f ms by CLIP (%8.2f ms per image patch)\n", __func__, t_img_enc_ms, t_img_enc_ms / *n_img_pos);
 
     return true;
 }
