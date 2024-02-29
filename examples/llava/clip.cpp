@@ -937,7 +937,7 @@ struct clip_ctx * clip_model_load(const char * fname, const int verbosity = 1) {
 
 #ifdef GGML_USE_CUBLAS
     new_clip->backend = ggml_backend_cuda_init(0);
-    printf("%s: CLIP using CUDA backend\n", __func__);
+    // printf("%s: CLIP using CUDA backend\n", __func__);
 #endif
 
 #ifdef GGML_USE_METAL
@@ -980,7 +980,7 @@ struct clip_ctx * clip_model_load(const char * fname, const int verbosity = 1) {
         }
     }
 
-    printf("%s: params backend buffer size = % 6.2f MB (%i tensors)\n", __func__, model_size / (1024.0 * 1024.0), n_tensors);
+    // printf("%s: params backend buffer size = % 6.2f MB (%i tensors)\n", __func__, model_size / (1024.0 * 1024.0), n_tensors);
 
     // load tensors
     {
@@ -1216,7 +1216,7 @@ struct clip_ctx * clip_model_load(const char * fname, const int verbosity = 1) {
         ggml_cgraph * gf = clip_image_build_graph(new_clip, &batch);
         ggml_gallocr_reserve(new_clip->compute_alloc, gf);
         size_t compute_memory_buffer_size = ggml_gallocr_get_buffer_size(new_clip->compute_alloc, 0);
-        printf("%s: compute allocated memory: %.2f MB\n", __func__, compute_memory_buffer_size /1024.0/1024.0);
+        // printf("%s: compute allocated memory: %.2f MB\n", __func__, compute_memory_buffer_size /1024.0/1024.0);
     }
 
     return new_clip;
