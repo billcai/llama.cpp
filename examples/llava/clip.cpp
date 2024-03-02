@@ -859,8 +859,8 @@ struct clip_ctx * clip_model_load(const char * fname, const int verbosity = 1) {
 
     // kv
     const int n_kv = gguf_get_n_kv(ctx);
-    printf("%s: loaded meta data with %d key-value pairs and %d tensors from %s\n",
-        __func__, n_kv, n_tensors, fname);
+    // printf("%s: loaded meta data with %d key-value pairs and %d tensors from %s\n",
+    //     __func__, n_kv, n_tensors, fname);
     {
         std::map<enum ggml_type, uint32_t> n_type;
 
@@ -870,7 +870,7 @@ struct clip_ctx * clip_model_load(const char * fname, const int verbosity = 1) {
             n_type[type]++;
         }
 
-        printf("%s: Dumping metadata keys/values. Note: KV overrides do not apply in this output.\n", __func__);
+        // printf("%s: Dumping metadata keys/values. Note: KV overrides do not apply in this output.\n", __func__);
         for (int i = 0; i < n_kv; i++) {
             const char * name           = gguf_get_key(ctx, i);
             const enum gguf_type type   = gguf_get_kv_type(ctx, i);
@@ -886,7 +886,7 @@ struct clip_ctx * clip_model_load(const char * fname, const int verbosity = 1) {
             }
             replace_all(value, "\n", "\\n");
 
-            printf("%s: - kv %3d: %42s %-16s = %s\n", __func__, i, name, type_name.c_str(), value.c_str());
+            // printf("%s: - kv %3d: %42s %-16s = %s\n", __func__, i, name, type_name.c_str(), value.c_str());
         }
 
         // print type counts
@@ -895,7 +895,7 @@ struct clip_ctx * clip_model_load(const char * fname, const int verbosity = 1) {
                 continue;
             }
 
-            printf("%s: - type %4s: %4d tensors\n", __func__, ggml_type_name(kv.first), kv.second);
+            // printf("%s: - type %4s: %4d tensors\n", __func__, ggml_type_name(kv.first), kv.second);
         }
     }
 
@@ -909,10 +909,10 @@ struct clip_ctx * clip_model_load(const char * fname, const int verbosity = 1) {
             struct ggml_tensor * cur = ggml_get_tensor(meta, name);
             size_t tensor_size = ggml_nbytes(cur);
             model_size += tensor_size;
-            if (verbosity >= 3) {
-                printf("%s: tensor[%d]: n_dims = %d, name = %s, tensor_size=%zu, offset=%zu, shape:[%" PRIu64 ", %" PRIu64 ", %" PRIu64 ", %" PRIu64 "], type = %s\n",
-                       __func__, i, ggml_n_dims(cur), cur->name, tensor_size, offset, cur->ne[0], cur->ne[1], cur->ne[2], cur->ne[3], ggml_type_name(type));
-            }
+            // if (verbosity >= 3) {
+            //     printf("%s: tensor[%d]: n_dims = %d, name = %s, tensor_size=%zu, offset=%zu, shape:[%" PRIu64 ", %" PRIu64 ", %" PRIu64 ", %" PRIu64 "], type = %s\n",
+            //            __func__, i, ggml_n_dims(cur), cur->name, tensor_size, offset, cur->ne[0], cur->ne[1], cur->ne[2], cur->ne[3], ggml_type_name(type));
+            // }
         }
     }
 
@@ -942,13 +942,13 @@ struct clip_ctx * clip_model_load(const char * fname, const int verbosity = 1) {
 
 #ifdef GGML_USE_METAL
     new_clip->backend = ggml_backend_metal_init();
-    printf("%s: CLIP using Metal backend\n", __func__);
+    // printf("%s: CLIP using Metal backend\n", __func__);
 #endif
 
 
     if (!new_clip->backend) {
         new_clip->backend = ggml_backend_cpu_init();
-        printf("%s: CLIP using CPU backend\n", __func__);
+        // printf("%s: CLIP using CPU backend\n", __func__);
     }
 
     // model size and capabilities
@@ -972,11 +972,11 @@ struct clip_ctx * clip_model_load(const char * fname, const int verbosity = 1) {
         new_clip->use_gelu = gguf_get_val_bool(ctx, idx);
 
         if (verbosity >= 1) {
-            printf("%s: text_encoder:   %d\n", __func__, new_clip->has_text_encoder);
-            printf("%s: vision_encoder: %d\n", __func__, new_clip->has_vision_encoder);
-            printf("%s: llava_projector:  %d\n", __func__, new_clip->has_llava_projector);
-            printf("%s: model size:     %.2f MB\n", __func__, model_size / 1024.0 / 1024.0);
-            printf("%s: metadata size:  %.2f MB\n", __func__, ggml_get_mem_size(meta) / 1024.0 / 1024.0);
+            // printf("%s: text_encoder:   %d\n", __func__, new_clip->has_text_encoder);
+            // printf("%s: vision_encoder: %d\n", __func__, new_clip->has_vision_encoder);
+            // printf("%s: llava_projector:  %d\n", __func__, new_clip->has_llava_projector);
+            // printf("%s: model size:     %.2f MB\n", __func__, model_size / 1024.0 / 1024.0);
+            // printf("%s: metadata size:  %.2f MB\n", __func__, ggml_get_mem_size(meta) / 1024.0 / 1024.0);
         }
     }
 
@@ -1091,23 +1091,23 @@ struct clip_ctx * clip_model_load(const char * fname, const int verbosity = 1) {
         }
 
         if (verbosity >= 2) {
-            printf("\n%s: vision model hparams\n", __func__);
-            printf("image_size         %d\n", hparams.image_size);
-            printf("patch_size         %d\n", hparams.patch_size);
-            printf("v_hidden_size      %d\n", hparams.hidden_size);
-            printf("v_n_intermediate   %d\n", hparams.n_intermediate);
-            printf("v_projection_dim   %d\n", hparams.projection_dim);
-            printf("v_n_head           %d\n", hparams.n_head);
-            printf("v_n_layer          %d\n", hparams.n_layer);
-            printf("v_eps              %f\n", hparams.eps);
-            printf("v_image_mean       %f %f %f\n", new_clip->image_mean[0], new_clip->image_mean[1], new_clip->image_mean[2]);
-            printf("v_image_std        %f %f %f\n", new_clip->image_std[0], new_clip->image_std[1], new_clip->image_std[2]);
-            printf("v_image_grid_pinpoints: ");
-            for (int i = 0; i < 32 && (hparams.image_grid_pinpoints[i] != 0); ++i) {
-                printf("%d ", hparams.image_grid_pinpoints[i]);
-            }
-            printf("\n");
-            printf("v_mm_patch_merge_type: %s\n", hparams.mm_patch_merge_type);
+            // printf("\n%s: vision model hparams\n", __func__);
+            // printf("image_size         %d\n", hparams.image_size);
+            // printf("patch_size         %d\n", hparams.patch_size);
+            // printf("v_hidden_size      %d\n", hparams.hidden_size);
+            // printf("v_n_intermediate   %d\n", hparams.n_intermediate);
+            // printf("v_projection_dim   %d\n", hparams.projection_dim);
+            // printf("v_n_head           %d\n", hparams.n_head);
+            // printf("v_n_layer          %d\n", hparams.n_layer);
+            // printf("v_eps              %f\n", hparams.eps);
+            // printf("v_image_mean       %f %f %f\n", new_clip->image_mean[0], new_clip->image_mean[1], new_clip->image_mean[2]);
+            // printf("v_image_std        %f %f %f\n", new_clip->image_std[0], new_clip->image_std[1], new_clip->image_std[2]);
+            // printf("v_image_grid_pinpoints: ");
+            // for (int i = 0; i < 32 && (hparams.image_grid_pinpoints[i] != 0); ++i) {
+            //     printf("%d ", hparams.image_grid_pinpoints[i]);
+            // }
+            // printf("\n");
+            // printf("v_mm_patch_merge_type: %s\n", hparams.mm_patch_merge_type);
 
         }
 
